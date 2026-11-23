@@ -1,0 +1,14 @@
+#!/usr/bin/python3
+#SPDX-FileCopyrightText: 2026 Haruto Handa
+#SPDX-License-Identifier: BSD-3-Clause
+
+import sys
+import argparse
+
+line = sys.stdin.readline().strip()
+
+items = line.split()
+
+items.sort(key=float)
+
+print(" ".join(items))
