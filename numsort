@@ -5,10 +5,26 @@
 import sys
 import argparse
 
-line = sys.stdin.readline().strip()
+def read_data(items):
+	line = sys.stdin.readline().strip()
+	items = line.split()
+	
+	return items
 
-items = line.split()
+def sort_nums(items):
+	items.sort(key=float)
 
-items.sort(key=float)
+	return items
 
-print(" ".join(items))
+def main():
+	items = []
+
+	items = read_data(items)
+	items = sort_nums(items)
+
+	print(" ".join(items))
+
+	return
+
+if __name__ == "__main__":
+	main()
