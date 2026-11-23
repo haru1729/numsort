@@ -7,6 +7,10 @@ import argparse
 
 def read_data(items):
 	line = sys.stdin.readline().strip()
+	if not line:
+		sys.stderr.write("エラー：入力データが空です\n")
+		sys.exit(1)
+
 	items = line.split()
 	
 	return items
