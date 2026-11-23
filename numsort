@@ -3,9 +3,9 @@
 #SPDX-License-Identifier: BSD-3-Clause
 
 import sys
-import argparse
+import math
 
-def read_data(items):
+def read_data():
 	line = sys.stdin.readline().strip()
 	if not line:
 		sys.stderr.write("エラー：入力データが空です\n")
@@ -17,22 +17,25 @@ def read_data(items):
 
 def sort_nums(items):
 	try:
+		for x in items:
+			if not math.isfinite(float(x)):
+				raise OverflowError
 		items.sort(key=float)
+
 	except ValueError:
 		sys.stderr.write("エラー：数値以外のデータが含まれています\n")
 		sys.exit(1)
-		
+	except OverflowError:
+		sys.stderr.write("エラー：NANやINFは扱えません\n")
+		sys.exit(1)
+
 	return items
 
 def main():
-	items = []
-
-	items = read_data(items)
+	items = read_data()
 	items = sort_nums(items)
 
 	print(" ".join(items))
-
-	return
 
 if __name__ == "__main__":
 	main()
