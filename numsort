@@ -16,8 +16,12 @@ def read_data(items):
 	return items
 
 def sort_nums(items):
-	items.sort(key=float)
-
+	try:
+		items.sort(key=float)
+	except ValueError:
+		sys.stderr.write("エラー：数値以外のデータが含まれています\n")
+		sys.exit(1)
+		
 	return items
 
 def main():
