@@ -28,7 +28,7 @@ out=$(echo "-7.5 2.0 8 -5.4" | ./numsort)
 out=$(echo "" | ./numsort 2>/dev/null)   #2>dev/null -> 標準エラー出力を捨て、標準出力のみを参照
 [ "$?" = 1 ] || ng $LINENO
 [ "${out}" = "" ] || ng $LINENO
-err=$(echo "" | ./numsort 2>&1 >/dev/null)      #2>&1 -> 標準エラー出力を標準入力へ移動　>dev/null -> 元の標準出力を破棄
+err=$(echo "" | ./numsort 2>&1 >/dev/null)      #2>&1 -> 標準エラー出力を標準出力へ移動　>dev/null -> 元の標準出力を破棄
 [ "${err}" = "エラー：入力データが空です" ] || ng $LINENO
 
 #数値以外の文字の混入
