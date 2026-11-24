@@ -13,14 +13,10 @@ def read_data():
 	line = sys.stdin.readline().strip()
 	if not line:
 		raise NumSortError("入力データが空です\n")
-		sys.stderr.write("エラー：入力データが空です\n")
-		sys.exit(1)
 
 	#区切り文字の判別
 	if ';' in line and ',' in line:
 		raise NumSortError("区切り文字が統一されていません\n")
-		sys.stderr.write("エラー：区切り文字が統一されていません\n")
-		sys.exit(1)
 
 	if ';' in line:
 		sep = ';'
@@ -43,8 +39,6 @@ def read_data():
 		#2個以上の要素に分割できたら、空白とその他の区切りが混在していると判断
 		if any(len(x.split()) > 1 for x in items):
 			raise NumSortError("区切り文字が統一されていません\n")
-			sys.stderr.write("エラー：区切り文字が統一されていません\n")
-			sys.exit(1)
 	
 	return items, out_sep
 
@@ -57,12 +51,8 @@ def sort_nums(items):
 
 	except ValueError:
 		raise NumSortError("数値以外のデータが含まれています\n")
-		sys.stderr.write("エラー：数値以外のデータが含まれています\n")
-		sys.exit(1)
 	except OverflowError:
 		raise NumSortError("NANやINFは扱えません\n")
-		sys.stderr.write("エラー：NANやINFは扱えません\n")
-		sys.exit(1)
 
 	return items
 
