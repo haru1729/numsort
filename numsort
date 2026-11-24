@@ -4,10 +4,18 @@
 
 import sys
 import math
+import argparse
 
 #例外処理モジュール化用のクラス
 class NumSortError(Exception):
 	pass
+
+def parse_args():
+	parser = argparse.ArgumentParser(prog="numsort", description="標準入力から受け取った数値をソートします")
+
+	parser.add_argument("-r", "--reverse", action="store_true", help="数値を降順でソート")
+
+	return parser.parse_args()
 
 def read_data():
 	line = sys.stdin.readline().strip()
@@ -42,12 +50,12 @@ def read_data():
 	
 	return items, out_sep
 
-def sort_nums(items):
+def sort_nums(items, reverse=False):
 	try:
 		for x in items:
 			if not math.isfinite(float(x)):
 				raise OverflowError
-		items.sort(key=float)
+		items.sort(key=float, reverse=reverse)
 
 	except ValueError:
 		raise NumSortError("数値以外のデータが含まれています\n")
@@ -57,9 +65,11 @@ def sort_nums(items):
 	return items
 
 def main():
+	args = parse_args()
+
 	try:
 		items, out_sep = read_data()
-		items = sort_nums(items)
+		items = sort_nums(items, reverse = args.reverse)
 		print(out_sep.join(items))
 
 	except NumSortError as e:
