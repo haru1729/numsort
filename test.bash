@@ -23,7 +23,15 @@ out=$(echo "-3 0 -6 5 3" | ./numsort)
 out=$(echo "-7.5 2.0 8 -5.4" | ./numsort)
 [ "${out}" = "-7.5 -5.4 2.0 8" ] || ng "$LINENO"
 
-#異常処理
+#区切り文字の判別(;)
+out=$(echo "-1.5;2.0;3;-4" | ./numsort)
+[ "${out}" = "-4;-1.5;2.0;3" ] || ng $LINENO
+
+#区切り文字の判別(,)
+out=$(echo "-1.5,2.0,3,-4" | ./numsort)
+[ "${out}" = "-4,-1.5,2.0,3" ] || ng $LINENO
+
+#例外処理
 #空の入力
 out=$(echo "" | ./numsort 2>/dev/null)   #2>dev/null -> 標準エラー出力を捨て、標準出力のみを参照
 [ "$?" = 1 ] || ng $LINENO
@@ -51,6 +59,27 @@ out=$(echo "1 3.5 -INF -2 -4.0" | ./numsort 2>/dev/null)
 [ "${out}" = "" ] || ng $LINENO
 err=$(echo "1 3.5 -INF -2 -4.0" | ./numsort 2>&1 >/dev/null)
 [ "${err}" = "エラー：NANやINFは扱えません" ] || ng $LINENO
+
+#区切り文字の混在(空白+;)
+out=$(echo "-2.0 4;6 10.5" | ./numsort 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "-2.0 4;6 10.5" | ./numsort 2>&1 >/dev/null)
+[ "${err}" = "エラー：区切り文字が統一されていません" ] || ng $LINENO
+
+#区切り文字の混在(空白+,)
+out=$(echo "-2.0 4,6 10.5" | ./numsort 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "-2.0 4,6 10.5" | ./numsort 2>&1 >/dev/null)
+[ "${err}" = "エラー：区切り文字が統一されていません" ] || ng $LINENO
+
+#区切り文字の混在(;+,)
+out=$(echo "-2.0;4,6;10.5" | ./numsort 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "-2.0;4,6;10.5" | ./numsort 2>&1 >/dev/null)
+[ "${err}" = "エラー：区切り文字が統一されていません" ] || ng $LINENO
 
 [ "${res}" = 0 ] && echo OK
 
