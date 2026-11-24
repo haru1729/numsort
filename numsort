@@ -5,14 +5,20 @@
 import sys
 import math
 
+#例外処理モジュール化用のクラス
+class NumSortError(Exception):
+	pass
+
 def read_data():
 	line = sys.stdin.readline().strip()
 	if not line:
+		raise NumSortError("入力データが空です\n")
 		sys.stderr.write("エラー：入力データが空です\n")
 		sys.exit(1)
 
 	#区切り文字の判別
 	if ';' in line and ',' in line:
+		raise NumSortError("区切り文字が統一されていません\n")
 		sys.stderr.write("エラー：区切り文字が統一されていません\n")
 		sys.exit(1)
 
@@ -36,6 +42,7 @@ def read_data():
 		#空白以外の区切り文字で分割->空白での分割を実行
 		#2個以上の要素に分割できたら、空白とその他の区切りが混在していると判断
 		if any(len(x.split()) > 1 for x in items):
+			raise NumSortError("区切り文字が統一されていません\n")
 			sys.stderr.write("エラー：区切り文字が統一されていません\n")
 			sys.exit(1)
 	
@@ -49,19 +56,25 @@ def sort_nums(items):
 		items.sort(key=float)
 
 	except ValueError:
+		raise NumSortError("数値以外のデータが含まれています\n")
 		sys.stderr.write("エラー：数値以外のデータが含まれています\n")
 		sys.exit(1)
 	except OverflowError:
+		raise NumSortError("NANやINFは扱えません\n")
 		sys.stderr.write("エラー：NANやINFは扱えません\n")
 		sys.exit(1)
 
 	return items
 
 def main():
-	items, out_sep = read_data()
-	items = sort_nums(items)
+	try:
+		items, out_sep = read_data()
+		items = sort_nums(items)
+		print(out_sep.join(items))
 
-	print(out_sep.join(items))
+	except NumSortError as e:
+		sys.stderr.write(f"エラー：{e}")
+		sys.exit(1)
 
 if __name__ == "__main__":
 	main()
