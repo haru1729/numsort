@@ -12,6 +12,10 @@ def read_data():
 		sys.exit(1)
 
 	#区切り文字の判別
+	if ';' in line and ',' in line:
+		sys.stderr.write("エラー：区切り文字が統一されていません\n")
+		sys.exit(1)
+
 	if ';' in line:
 		sep = ';'
 		out_sep = ';'
@@ -28,7 +32,12 @@ def read_data():
 	if sep is None:
 		items = line.split()
 	else:
-		items = [x.strip() for x in line.split(sep)]
+		items = [x.strip() for x in line.split(sep)]	#sepでlineを分割し、前後の空白を削除
+		#空白以外の区切り文字で分割->空白での分割を実行
+		#2個以上の要素に分割できたら、空白とその他の区切りが混在していると判断
+		if any(len(x.split()) > 1 for x in items):
+			sys.stderr.write("エラー：区切り文字が統一されていません\n")
+			sys.exit(1)
 	
 	return items, out_sep
 
