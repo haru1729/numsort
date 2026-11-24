@@ -11,9 +11,26 @@ def read_data():
 		sys.stderr.write("エラー：入力データが空です\n")
 		sys.exit(1)
 
-	items = line.split()
+	#区切り文字の判別
+	if ';' in line:
+		sep = ';'
+		out_sep = ';'
+
+	elif ',' in line:
+		sep = ','
+		out_sep = ','
+
+	else:
+		sep = None
+		out_sep = ' '
+
+	#区切り文字に応じた文字列の分割
+	if sep is None:
+		items = line.split()
+	else:
+		items = [x.strip() for x in line.split(sep)]
 	
-	return items
+	return items, out_sep
 
 def sort_nums(items):
 	try:
@@ -32,10 +49,10 @@ def sort_nums(items):
 	return items
 
 def main():
-	items = read_data()
+	items, out_sep = read_data()
 	items = sort_nums(items)
 
-	print(" ".join(items))
+	print(out_sep.join(items))
 
 if __name__ == "__main__":
 	main()
