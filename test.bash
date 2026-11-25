@@ -31,6 +31,10 @@ out=$(echo "-1.5;2.0;3;-4" | ./numsort)
 out=$(echo "-1.5,2.0,3,-4" | ./numsort)
 [ "${out}" = "-4,-1.5,2.0,3" ] || ng $LINENO
 
+#オプション(降順)
+out=$(echo "-1 0 1.5 2 2.0" | ./numsort -r)
+[ "${out}" = "2 2.0 1.5 0 -1" ] || ng $LINENO
+
 #例外処理
 #空の入力
 out=$(echo "" | ./numsort 2>/dev/null)   #2>dev/null -> 標準エラー出力を捨て、標準出力のみを参照
