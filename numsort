@@ -14,6 +14,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(prog="numsort", description="標準入力から受け取った数値をソートします")
 
 	parser.add_argument("-r", "--reverse", action="store_true", help="数値を降順でソート")
+	parser.add_argument("-d", "--delimiter", type=str, default=None, help="出力の区切り文字の指定")
 
 	return parser.parse_args()
 
@@ -66,10 +67,18 @@ def sort_nums(items, reverse=False):
 
 def main():
 	args = parse_args()
-
+	
 	try:
 		items, out_sep = read_data()
 		items = sort_nums(items, reverse = args.reverse)
+		
+		if args.delimiter is not None:
+			if len(args.delimiter) != 1:
+				raise NumSortError("区切り文字は1文字で指定してください\n")
+			if args.delimiter in "0123456789.+-":
+				raise NumSortError("数字，小数点，符号を区切り文字に指定しないでください\n")
+			out_sep = args.delimiter
+		
 		print(out_sep.join(items))
 
 	except NumSortError as e:
