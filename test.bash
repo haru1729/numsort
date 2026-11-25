@@ -31,9 +31,22 @@ out=$(echo "-1.5;2.0;3;-4" | ./numsort)
 out=$(echo "-1.5,2.0,3,-4" | ./numsort)
 [ "${out}" = "-4,-1.5,2.0,3" ] || ng $LINENO
 
-#オプション(降順)
+#オプション
+#降順
 out=$(echo "-1 0 1.5 2 2.0" | ./numsort -r)
 [ "${out}" = "2 2.0 1.5 0 -1" ] || ng $LINENO
+
+#区切り文字の指定：セミコロン
+out=$(echo "1 0 -2.5 3" | ./numsort -d ';')
+[ "${out}" = "-2.5;0;1;3" ] || ng $LINENO
+
+#区切り文字の変更：; -> |
+out=$(echo "1;0;-2.5;3" | ./numsort -d '|')
+[ "${out}" = "-2.5|0|1|3" ] || ng $LINENO
+
+#オプションの併用
+out=$(echo "-9.0 4 4.0 2.5" | ./numsort -rd ',')
+[ "${out}" = "4,4.0,2.5,-9.0" ] || ng $LINENO
 
 #例外処理
 #空の入力
@@ -84,6 +97,40 @@ out=$(echo "-2.0;4,6;10.5" | ./numsort 2>/dev/null)
 [ "${out}" = "" ] || ng $LINENO
 err=$(echo "-2.0;4,6;10.5" | ./numsort 2>&1 >/dev/null)
 [ "${err}" = "エラー：区切り文字が統一されていません" ] || ng $LINENO
+
+#オプション
+#区切り文字に数字を指定
+out=$(echo "0 1 -2 3" | ./numsort -d '1' 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "0 1 -2 3" | ./numsort -d '1' 2>&1 >/dev/null)
+[ "${err}" = "エラー：数字，小数点，符号を区切り文字に指定しないでください" ] || ng $LINENO
+
+#区切り文字にピリオドを指定
+out=$(echo "0 1 -2 3" | ./numsort -d '.' 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "0 1 -2 3" | ./numsort -d '.' 2>&1 >/dev/null)
+[ "${err}" = "エラー：数字，小数点，符号を区切り文字に指定しないでください" ] || ng $LINENO
+
+#区切り文字に符号を指定
+out=$(echo "0 1 -2 3" | ./numsort -d '+' 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "0 1 -2 3" | ./numsort -d '+' 2>&1 >/dev/null)
+[ "${err}" = "エラー：数字，小数点，符号を区切り文字に指定しないでください" ] || ng $LINENO
+
+#区切り文字を2文字以上で指定
+out=$(echo "0 1 -2 3" | ./numsort -d 'er' 2>/dev/null)
+[ "$?" = 1 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
+err=$(echo "0 1 -2 3" | ./numsort -d 'er' 2>&1 >/dev/null)
+[ "${err}" = "エラー：区切り文字は1文字で指定してください" ] || ng $LINENO
+
+#区切り文字に空文字を指定(引数なし)
+out=$(echo "0 1 -2 3" | ./numsort -d  2>/dev/null)
+[ "$?" = 2 ] || ng $LINENO
+[ "${out}" = "" ] || ng $LINENO
 
 [ "${res}" = 0 ] && echo OK
 
